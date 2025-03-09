@@ -100,11 +100,19 @@ def signup():
     
     table = dynamodb.Table(USERS_TABLE)
     try:
+        user_id = str(uuid.uuid4())  # Generate user_id
         response = table.put_item(
-            Item={'username': username, 'password': hashed_password, 'user_id': str(uuid.uuid4())},
+            Item={'username': username, 'password': hashed_password, 'user_id': user_id},
             ConditionExpression='attribute_not_exists(username)'
         )
-        return jsonify({"message": "User registered successfully"}), 201
+        # Generate token after successful signup
+        payload = {
+            'username': username,
+            'user_id': user_id,
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+        }
+        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+        return jsonify({"message": "User registered successfully", "token": token}), 201
     except dynamodb.meta.client.exceptions.ConditionalCheckFailedException:
         return jsonify({"message": "Username already exists"}), 400
 
@@ -232,9 +240,6 @@ def get_image_results():
     ]
     
     return jsonify({"results": results}), 200
-
-
-
 
 @app.route('/')
 def index():

@@ -7,13 +7,56 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background-color: #fafafa;
+            background: url('/static/images/pexels-photo-355948.jpeg') no-repeat center fixed;
+            background-size: cover;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            background-color: #e0e0e0;
+            transition: background-image 0.5s ease-in-out;
+        }
+
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        #loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #fff;
+            border-top: 5px solid #0095f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite, pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 149, 246, 0.5); }
+            50% { box-shadow: 0 0 10px 5px rgba(0, 149, 246, 0.3); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 149, 246, 0.5); }
         }
 
         .container {
@@ -22,42 +65,21 @@
             width: 100%;
             margin: 20px;
             align-items: center;
-        }
-
-        .image-section {
-            flex: 1;
-            background: url('img.jpg') no-repeat center;
-            background-size: cover;
-            min-height: 500px;
-            border-radius: 8px 0 0 8px;
-            background-color: #f0f2f5;
-        }
-
-        .image-section.error {
-            background: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center;
-            background-size: cover;
-        }
-
-        .image-section.hidden {
-            display: none; /* Hide image section when logged in */
+            justify-content: center;
         }
 
         .content-section {
             flex: 1;
-            background: #fff;
+            background: rgba(255, 255, 255, 0.95);
             padding: 40px;
             border: 1px solid #dbdbdb;
-            border-radius: 0 8px 8px 0;
+            border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             max-width: 350px;
-            margin-left: 20px;
             transition: transform 0.3s ease;
         }
 
-        /* When logged in, adjust content section styling */
         .container.logged-in .content-section {
-            margin-left: 0;
-            border-radius: 8px;
             max-width: 100%;
             width: 100%;
         }
@@ -108,32 +130,12 @@
             border-color: #ed4956;
         }
 
-        input:invalid:focus {
-            box-shadow: 0 0 0 2px rgba(237,73,86,0.2);
-        }
-
         input[type="file"] {
             border: 1px solid #e1e8ed;
             padding: 10px;
             background: #fafafa;
             border-radius: 4px;
             font-size: 14px;
-            font-weight: 300;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        input[type="file"]:focus {
-            outline: none;
-            border-color: #0095f6;
-            box-shadow: 0 0 0 2px rgba(0,149,246,0.2);
-        }
-
-        input[type="file"]:invalid {
-            border-color: #ed4956;
-        }
-
-        input[type="file"]:invalid:focus {
-            box-shadow: 0 0 0 2px rgba(237,73,86,0.2);
         }
 
         button {
@@ -142,48 +144,37 @@
             background-color: #0095f6;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            transition: background-color 0.3s ease, transform 0.1s ease;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 12px rgba(0, 149, 246, 0.3);
         }
 
         button:hover:not(.loading) {
             background-color: #0078c9;
-            transform: scale(1.02);
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(0, 149, 246, 0.5);
         }
 
         button.loading {
             background-color: #66bfff;
             cursor: not-allowed;
             pointer-events: none;
-            position: relative;
         }
 
         button.loading::after {
             content: '';
             position: absolute;
-            width: 16px;
-            height: 16px;
+            width: 20px;
+            height: 20px;
             top: 50%;
             right: 15px;
             transform: translateY(-50%);
-            border: 2px solid #fff;
-            border-bottom-color: transparent;
+            border: 3px solid #fff;
+            border-top: 3px solid transparent;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: translateY(-50%) rotate(0deg); }
-            100% { transform: translateY(-50%) rotate(360deg); }
-        }
-
-        p {
-            margin: 10px 0;
-            color: #8e8e8e;
-            font-size: 14px;
-            text-align: center;
         }
 
         .error-message {
@@ -229,7 +220,6 @@
         .celebrity-name {
             color: #0095f6;
             font-size: 18px;
-            margin: 0;
             font-weight: 600;
         }
 
@@ -245,7 +235,7 @@
             margin: 0 0 10px 0;
         }
 
-        .text-full {
+        .text-full, .object-labels, .text-items {
             background: #fafafa;
             padding: 10px 15px;
             border-radius: 4px;
@@ -253,36 +243,6 @@
             font-size: 14px;
             margin-bottom: 15px;
             border-left: 3px solid #0095f6;
-            transition: border-color 0.3s ease;
-        }
-
-        .text-items, .object-labels {
-            margin-top: 10px;
-        }
-
-        .text-item, .object-label {
-            padding: 8px 12px;
-            background: #f5f5f5;
-            border-radius: 3px;
-            margin: 5px 0;
-            color: #444;
-            font-size: 14px;
-            transition: background-color 0.3s ease;
-        }
-
-        .text-item:hover, .object-label:hover {
-            background-color: #e9ecef;
-        }
-
-        .result-field {
-            margin: 5px 0;
-            line-height: 1.5;
-            font-size: 14px;
-        }
-
-        .result-field strong {
-            color: #262626;
-            font-weight: 600;
         }
 
         .toggle-link {
@@ -304,52 +264,47 @@
                 flex-direction: column;
                 margin: 10px;
             }
-            .image-section {
-                display: none; /* Always hidden on mobile */
-            }
             .content-section {
                 max-width: 100%;
-                border-radius: 8px;
-                margin-left: 0;
             }
         }
     </style>
 </head>
 <body>
+    <div id="loading-overlay">
+        <div class="loader"></div>
+    </div>
+
     <div class="container" id="main-container">
-        <div class="image-section" id="imageSection"></div>
         <div class="content-section">
             <h1>Image Recognition</h1>
 
-            <!-- Signup Section -->
-            <div id="signup-section">
+            <div id="signup-section" class="hidden">
                 <h2>Sign Up</h2>
                 <form id="signup-form" novalidate>
-                    <input type="text" id="signup-username" placeholder="Username" required pattern="[A-Za-z0-9_]{3,20}">
-                    <input type="password" id="signup-password" placeholder="Password" required pattern=".{6,}">
+                    <input type="text" id="signup-username" placeholder="Username" required pattern="[A-Za-z0-9]{3,20}">
+                    <input type="password" id="signup-password" placeholder="Password" required minlength="6">
                     <button type="submit">Sign Up</button>
                 </form>
                 <p id="signup-message"></p>
                 <a href="#" id="show-login" class="toggle-link">Already have an account? Log in</a>
             </div>
 
-            <!-- Login Section -->
-            <div id="login-section" class="hidden">
+            <div id="login-section">
                 <h2>Login</h2>
                 <form id="login-form" novalidate>
-                    <input type="text" id="login-username" placeholder="Username" required pattern="[A-Za-z0-9_]{3,20}">
-                    <input type="password" id="login-password" placeholder="Password" required pattern=".{6,}">
+                    <input type="text" id="login-username" placeholder="Username" required pattern="[A-Za-z0-9]{3,20}">
+                    <input type="password" id="login-password" placeholder="Password" required minlength="6">
                     <button type="submit">Login</button>
                 </form>
                 <p id="login-message"></p>
                 <a href="#" id="show-signup" class="toggle-link">Don’t have an account? Sign up</a>
             </div>
 
-            <!-- Image Analysis Section (hidden until logged in) -->
             <div id="analysis-section" class="hidden">
                 <h2>Analyze Image</h2>
                 <form id="analyze-form" enctype="multipart/form-data">
-                    <input type="file" id="image-input" accept="image/*" required>
+                    <input type="file" id="image-input" accept="image/png,image/jpeg,image/jpg" required>
                     <select id="detection-type">
                         <option value="object">Object Detection</option>
                         <option value="text">Text Detection</option>
@@ -361,43 +316,45 @@
                 <div id="analyze-results"></div>
             </div>
 
-            <!-- Results Section (hidden until logged in) -->
             <div id="results-section" class="hidden">
                 <h2>Your Previous Results</h2>
                 <button id="fetch-results">Fetch Results</button>
                 <div id="results-list"></div>
             </div>
 
-            <!-- Logout Button (hidden until logged in) -->
             <button id="logout-btn" class="hidden">Logout</button>
         </div>
     </div>
 
     <script>
-        let token = null;
+        // Token management
+        const getToken = () => localStorage.getItem('authToken');
+        const setToken = (token) => localStorage.setItem('authToken', token);
+        const clearToken = () => localStorage.removeItem('authToken');
 
-        // Function to reconstruct text into a coherent string
+        // Initialize UI based on token presence
+        window.addEventListener('load', () => {
+            document.getElementById('loading-overlay').classList.add('hidden');
+            if (getToken()) {
+                showLoggedInUI();
+            }
+        });
+
+        // Background image fallback
+        document.addEventListener('DOMContentLoaded', () => {
+            const img = new Image();
+            img.src = '/static/images/pexels-photo-355948.jpeg';
+            img.onerror = () => {
+                document.body.style.backgroundImage = "url('https://images.pexels.com/photos/355948/pexels-photo-355948.jpeg')";
+            };
+        });
+
+        // Utility function to reconstruct text
         function reconstructText(textArray) {
             return textArray.join(' ').replace(/\s+/g, ' ').trim();
         }
 
-        // Check and handle image loading
-        document.addEventListener('DOMContentLoaded', () => {
-            const imageSection = document.getElementById('imageSection');
-            const img = new Image();
-            img.src = 'img.jpg';
-
-            img.onload = () => {
-                // Image loaded successfully, no action needed (already set in CSS)
-            };
-
-            img.onerror = () => {
-                imageSection.classList.add('error');
-                console.error('Image "img.jpg" failed to load. Using fallback image.');
-            };
-        });
-
-        // Show Signup or Login toggle
+        // Toggle between login and signup
         document.getElementById('show-signup').addEventListener('click', (e) => {
             e.preventDefault();
             document.getElementById('login-section').classList.add('hidden');
@@ -410,19 +367,21 @@
             document.getElementById('login-section').classList.remove('hidden');
         });
 
-        // Signup Form
+        // Signup handler
         document.getElementById('signup-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('signup-username').value;
             const password = document.getElementById('signup-password').value;
             const message = document.getElementById('signup-message');
+            const loadingOverlay = document.getElementById('loading-overlay');
 
-            if (!username.match(/[A-Za-z0-9_]{3,20}/) || !password.match(/.{6,}/)) {
-                message.textContent = 'Username must be 3-20 alphanumeric characters, and password must be at least 6 characters';
+            if (!username.match(/[A-Za-z0-9]{3,20}/) || password.length < 6) {
+                message.textContent = 'Username must be 3-20 alphanumeric characters, password 6+ characters';
                 message.className = 'error-message';
                 return;
             }
 
+            loadingOverlay.classList.remove('hidden');
             try {
                 const response = await fetch('/sign-up', {
                     method: 'POST',
@@ -432,38 +391,38 @@
                 const data = await response.json();
 
                 if (!response.ok) {
-                    if (response.status === 401) {
-                        message.textContent = 'Unauthorized: Invalid credentials or token. Please try again.';
-                    } else {
-                        message.textContent = data.message || `Server error: ${response.status}`;
-                    }
+                    message.textContent = data.error || 'Signup failed';
                     message.className = 'error-message';
-                    return;
+                } else {
+                    message.textContent = data.message;
+                    message.style.color = 'green';
+                    setToken(data.token); // Store token from signup
+                    showLoggedInUI();
                 }
-
-                message.textContent = data.message;
-                message.style.color = 'green';
-                token = data.token;
-                showLoggedInUI();
             } catch (error) {
-                message.textContent = 'Error signing up';
+                message.textContent = 'Network error during signup';
                 message.className = 'error-message';
+                console.error('Signup error:', error);
+            } finally {
+                loadingOverlay.classList.add('hidden');
             }
         });
 
-        // Login Form
+        // Login handler
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('login-username').value;
             const password = document.getElementById('login-password').value;
             const message = document.getElementById('login-message');
+            const loadingOverlay = document.getElementById('loading-overlay');
 
-            if (!username.match(/[A-Za-z0-9_]{3,20}/) || !password.match(/.{6,}/)) {
+            if (!username.match(/[A-Za-z0-9]{3,20}/) || password.length < 6) {
                 message.textContent = 'Invalid username or password format';
                 message.className = 'error-message';
                 return;
             }
 
+            loadingOverlay.classList.remove('hidden');
             try {
                 const response = await fetch('/login', {
                     method: 'POST',
@@ -473,26 +432,24 @@
                 const data = await response.json();
 
                 if (!response.ok) {
-                    if (response.status === 401) {
-                        message.textContent = 'Unauthorized: Invalid credentials or token. Please try again.';
-                    } else {
-                        message.textContent = data.message || `Server error: ${response.status}`;
-                    }
+                    message.textContent = data.error || 'Login failed';
                     message.className = 'error-message';
-                    return;
+                } else {
+                    message.textContent = data.message;
+                    message.style.color = 'green';
+                    setToken(data.token);
+                    showLoggedInUI();
                 }
-
-                message.textContent = data.message;
-                message.style.color = 'green';
-                token = data.token;
-                showLoggedInUI();
             } catch (error) {
-                message.textContent = 'Error logging in';
+                message.textContent = 'Network error during login';
                 message.className = 'error-message';
+                console.error('Login error:', error);
+            } finally {
+                loadingOverlay.classList.add('hidden');
             }
         });
 
-        // Analyze Image Form
+        // Analyze image handler
         document.getElementById('analyze-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const imageInput = document.getElementById('image-input');
@@ -500,9 +457,17 @@
             const message = document.getElementById('analyze-message');
             const resultsDiv = document.getElementById('analyze-results');
             const analyzeBtn = document.getElementById('analyze-btn');
+            const token = getToken();
+
+            if (!token) {
+                message.textContent = 'Please log in to analyze images';
+                message.className = 'error-message';
+                showLoggedOutUI();
+                return;
+            }
 
             if (!imageInput.files[0]) {
-                message.textContent = 'Please select an image to analyze';
+                message.textContent = 'Please select an image';
                 message.className = 'error-message';
                 return;
             }
@@ -514,7 +479,6 @@
             analyzeBtn.classList.add('loading');
             analyzeBtn.textContent = 'Analyzing';
             message.textContent = '';
-            message.className = '';
 
             try {
                 const response = await fetch('/analyze-image', {
@@ -522,35 +486,28 @@
                     headers: { 'Authorization': `Bearer ${token}` },
                     body: formData
                 });
+                const data = await response.json();
 
                 if (!response.ok) {
                     if (response.status === 401) {
-                        message.textContent = 'Unauthorized: Please log in again or check your token.';
-                        token = null; // Clear invalid token
+                        message.textContent = 'Session expired. Please log in again.';
+                        clearToken();
                         showLoggedOutUI();
-                    } else if (response.status === 404) {
-                        throw new Error('Image not found on server (404)');
                     } else {
-                        throw new Error(`Server error: ${response.status}`);
+                        message.textContent = data.error || 'Analysis failed';
                     }
                     message.className = 'error-message';
-                    resultsDiv.innerHTML = '<p class="error-message">Failed to process image. Please try again.</p>';
-                    return;
-                }
+                    resultsDiv.innerHTML = '';
+                } else {
+                    message.textContent = data.message;
+                    message.style.color = 'green';
 
-                const data = await response.json();
-                console.log('Response data:', data);
-
-                message.textContent = data.message || 'Analysis complete';
-                message.style.color = 'green';
-
-                if (response.ok && data.results) {
                     if (detectionType === 'celebrity' && data.results.celebrities) {
                         resultsDiv.innerHTML = data.results.celebrities.map(celeb => `
                             <div class="result-card">
                                 <h3 class="result-title">Celebrity Detected</h3>
                                 <h3 class="celebrity-name">${celeb.name}</h3>
-                                <p>Confidence: <span class="confidence-level">${(celeb.confidence).toFixed(2)}%</span></p>
+                                <p>Confidence: <span class="confidence-level">${celeb.confidence.toFixed(2)}%</span></p>
                             </div>
                         `).join('');
                     } else if (detectionType === 'text' && Array.isArray(data.results.text)) {
@@ -560,9 +517,7 @@
                                 <h3 class="result-title">Detected Text</h3>
                                 <div class="text-full">${fullText}</div>
                                 <div class="text-items">
-                                    ${data.results.text.map(text => `
-                                        <div class="text-item">${text}</div>
-                                    `).join('')}
+                                    ${data.results.text.map(text => `<div>${text}</div>`).join('')}
                                 </div>
                             </div>
                         `;
@@ -571,127 +526,110 @@
                             <div class="result-card">
                                 <h3 class="result-title">Detected Objects</h3>
                                 <div class="object-labels">
-                                    ${data.results.labels.map(label => `
-                                        <div class="object-label">${label}</div>
-                                    `).join('')}
+                                    ${data.results.labels.map(label => `<div>${label}</div>`).join('')}
                                 </div>
                             </div>
                         `;
-                    } else {
-                        resultsDiv.innerHTML = `<pre>${JSON.stringify(data.results, null, 2)}</pre>`;
                     }
-                } else {
-                    resultsDiv.innerHTML = '<p class="error-message">No valid results returned from analysis</p>';
-                    console.log('Invalid response format:', data);
                 }
             } catch (error) {
-                message.textContent = error.message || 'Error analyzing image';
+                message.textContent = 'Network error during analysis';
                 message.className = 'error-message';
-                resultsDiv.innerHTML = '<p class="error-message">Failed to process image. Please try again.</p>';
-                console.error('Fetch error:', error);
+                resultsDiv.innerHTML = '';
+                console.error('Analysis error:', error);
             } finally {
                 analyzeBtn.classList.remove('loading');
                 analyzeBtn.textContent = 'Analyze';
             }
         });
 
-        // Fetch Results
+        // Fetch results handler
         document.getElementById('fetch-results').addEventListener('click', async () => {
             const resultsList = document.getElementById('results-list');
+            const token = getToken();
+
+            if (!token) {
+                resultsList.innerHTML = '<p class="error-message">Please log in to view results</p>';
+                showLoggedOutUI();
+                return;
+            }
 
             try {
                 const response = await fetch('/get-image-results', {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
+                const data = await response.json();
 
                 if (!response.ok) {
                     if (response.status === 401) {
-                        resultsList.innerHTML = '<p class="error-message">Unauthorized: Please log in again or check your token.</p>';
-                        token = null; // Clear invalid token
+                        resultsList.innerHTML = '<p class="error-message">Session expired. Please log in again.</p>';
+                        clearToken();
                         showLoggedOutUI();
                     } else {
-                        throw new Error(`Server error: ${response.status}`);
+                        resultsList.innerHTML = `<p class="error-message">${data.error || 'Failed to fetch results'}</p>`;
                     }
-                    return;
-                }
-
-                const data = await response.json();
-                
-                if (response.ok && data.results) {
+                } else {
                     resultsList.innerHTML = data.results.map(item => {
-                        let resultsDisplay;
-                        if (item.image_results && item.image_results.celebrities) {
+                        let resultsDisplay = '';
+                        if (item.image_results.celebrities) {
                             resultsDisplay = item.image_results.celebrities.map(celeb => `
                                 <div class="result-card">
                                     <h3 class="result-title">Celebrity Detected</h3>
                                     <h3 class="celebrity-name">${celeb.name}</h3>
-                                    <p>Confidence: <span class="confidence-level">${(celeb.confidence).toFixed(2)}%</span></p>
+                                    <p>Confidence: <span class="confidence-level">${celeb.confidence.toFixed(2)}%</span></p>
                                 </div>
                             `).join('');
-                        } else if (item.image_results && Array.isArray(item.image_results.text)) {
+                        } else if (Array.isArray(item.image_results.text)) {
                             const fullText = reconstructText(item.image_results.text);
                             resultsDisplay = `
                                 <div class="result-card">
                                     <h3 class="result-title">Detected Text</h3>
                                     <div class="text-full">${fullText}</div>
                                     <div class="text-items">
-                                        ${item.image_results.text.map(text => `
-                                            <div class="text-item">${text}</div>
-                                        `).join('')}
+                                        ${item.image_results.text.map(text => `<div>${text}</div>`).join('')}
                                     </div>
                                 </div>
                             `;
-                        } else if (item.image_results && Array.isArray(item.image_results.labels)) {
+                        } else if (Array.isArray(item.image_results.labels)) {
                             resultsDisplay = `
                                 <div class="result-card">
                                     <h3 class="result-title">Detected Objects</h3>
                                     <div class="object-labels">
-                                        ${item.image_results.labels.map(label => `
-                                            <div class="object-label">${label}</div>
-                                        `).join('')}
+                                        ${item.image_results.labels.map(label => `<div>${label}</div>`).join('')}
                                     </div>
                                 </div>
                             `;
-                        } else {
-                            resultsDisplay = '<p class="error-message">No valid results stored</p>';
                         }
-
                         return `
                             <div class="result-card">
-                                <p class="result-field"><strong>ID:</strong> ${item.user_answer_id}</p>
-                                <p class="result-field"><strong>Question:</strong> ${item.question_id}</p>
-                                <p class="result-field"><strong>Answer:</strong> ${item.submitted_answer}</p>
-                                <p class="result-field"><strong>Results:</strong></p>
+                                <p><strong>ID:</strong> ${item.user_answer_id}</p>
+                                <p><strong>Question:</strong> ${item.question_id}</p>
+                                <p><strong>Answer:</strong> ${item.submitted_answer}</p>
+                                <p><strong>Results:</strong></p>
                                 ${resultsDisplay}
-                                <p class="result-field"><strong>Timestamp:</strong> ${new Date(item.timestamp).toLocaleString()}</p>
+                                <p><strong>Timestamp:</strong> ${new Date(item.timestamp).toLocaleString()}</p>
                             </div>
                         `;
-                    }).join('');
-                } else {
-                    resultsList.innerHTML = '<p class="error-message">No previous results found</p>';
+                    }).join('') || '<p>No previous results found</p>';
                 }
             } catch (error) {
-                resultsList.innerHTML = '<p class="error-message">Error fetching results</p>';
-                console.error('Fetch error:', error);
+                resultsList.innerHTML = '<p class="error-message">Network error fetching results</p>';
+                console.error('Fetch results error:', error);
             }
         });
 
-        // Logout
+        // Logout handler
         document.getElementById('logout-btn').addEventListener('click', () => {
-            token = null;
+            clearToken();
             showLoggedOutUI();
+            document.getElementById('login-section').classList.remove('hidden');
         });
 
-        // UI State Management
+        // UI state management
         function showLoggedInUI() {
             const container = document.getElementById('main-container');
-            const imageSection = document.getElementById('imageSection');
-            
-            // Hide image section and adjust container
-            imageSection.classList.add('hidden');
             container.classList.add('logged-in');
-
             document.getElementById('signup-section').classList.add('hidden');
             document.getElementById('login-section').classList.add('hidden');
             document.getElementById('analysis-section').classList.remove('hidden');
@@ -701,13 +639,8 @@
 
         function showLoggedOutUI() {
             const container = document.getElementById('main-container');
-            const imageSection = document.getElementById('imageSection');
-            
-            // Show image section and reset container
-            imageSection.classList.remove('hidden');
             container.classList.remove('logged-in');
-
-            document.getElementById('signup-section').classList.remove('hidden');
+            document.getElementById('signup-section').classList.add('hidden');
             document.getElementById('login-section').classList.remove('hidden');
             document.getElementById('analysis-section').classList.add('hidden');
             document.getElementById('results-section').classList.add('hidden');
@@ -717,6 +650,9 @@
             document.getElementById('analyze-message').textContent = '';
             document.getElementById('analyze-results').innerHTML = '';
             document.getElementById('results-list').innerHTML = '';
+            document.getElementById('signup-form').reset();
+            document.getElementById('login-form').reset();
+            document.getElementById('analyze-form').reset();
         }
     </script>
 </body>
